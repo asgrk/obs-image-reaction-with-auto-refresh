@@ -47,7 +47,23 @@ struct image_reaction_source {
 	bool animReset2;
 	bool loudOld;
 	bool animResetTrigger;
+
+	//Added update time elapsed for auto refreshing the images
+	float update_time_elapsed;
+
+	//added timestamps
+	time_t file_timestamp1;
+	time_t file_timestamp2;
 };
+
+//a method from image-source.c involved in the auto refresh
+static time_t get_modified_timestamp(const char *filename)
+{
+	struct stat stats;
+	if (os_stat(filename, &stats) != 0)
+		return -1;
+	return stats.st_mtime;
+}
 
 /*int MAX(int a, int b) {
 	return a > b ? a : b;
@@ -75,11 +91,22 @@ static void image_reaction_source_load(struct image_reaction_source *context)
 
 		if (file && *file) {
 			debug("loading texture '%s'", file);
+
+			//updating timestamps of the files
+			if(i==0){
+				context->file_timestamp1 = get_modified_timestamp(file);
+			} else {
+				context->file_timestamp2 = get_modified_timestamp(file);
+			}
+
 			gs_image_file3_init(
 				if3, file,
 				context->linear_alpha
 					? GS_IMAGE_ALPHA_PREMULTIPLY_SRGB
 					: GS_IMAGE_ALPHA_PREMULTIPLY);
+
+			//resetting the update_time_elapsed
+			context->update_time_elapsed = 0;
 
 			obs_enter_graphics();
 			gs_image_file3_init_texture(if3);
@@ -318,7 +345,25 @@ static void image_reaction_source_render(void *data, gs_effect_t *effect)
 static void image_reaction_tick(void *data, float seconds)
 {
 	struct image_reaction_source *context = data;
-	UNUSED_PARAMETER(seconds);
+
+	//um idk what this is for, but it said UNUSED and um im using it sooeoeooe I commented it out
+	// UNUSED_PARAMETER(seconds);
+
+	context->update_time_elapsed += seconds;
+
+	if (obs_source_showing(context->source)) {
+		if (context->update_time_elapsed >= 1.0f) {
+			time_t t1 = get_modified_timestamp(context->file1);
+			time_t t2 = get_modified_timestamp(context->file2);
+			context->update_time_elapsed = 0.0f;
+
+			//if either timestamp is changed, just reload both of them. The load function um doesn't let you load
+			//one or the other
+			if (context->file_timestamp1 != t1 || context->file_timestamp2 != t2) {
+				image_reaction_source_load(context);
+			}
+		}
+	}
 
 	// Update / refresh audio capturing
 	char *new_name = NULL;
