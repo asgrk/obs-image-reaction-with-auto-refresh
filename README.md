@@ -1,4 +1,4 @@
-I changed it to like check the image periodically and update it if it changes like how the normal image source does. So like if you wanted to change the reaction image source from a picture of a character talking to a picture of a character ANGRILY talking on the fly with a batch script that copies "ANGRY.png" to "current_talking_face.png" when you press a button on your stream deck or something, the image reaction source will actaully update when the image changes.
+I changed it to like check the image periodically and update it if it changes like how the normal image source does. So like if you wanted to change the reaction image source from a picture of a character talking to a picture of a character ANGRILY talking on the fly with a batch script that copies "ANGRY.png" to "current_talking_face.png" when you press a button on your stream deck or something, the image reaction source will update when the image changes.
 
 # OBS Image Reaction Plugin
 Image that reacts to sound source.
