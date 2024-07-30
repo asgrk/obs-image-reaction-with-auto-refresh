@@ -4,9 +4,11 @@ I changed it to like check the image periodically and update it if it changes li
 Image that reacts to sound source.
 
 ## Install Plugin
+Idk how to make an installer so you'll have to manually move the plugin data into your obs installation directory (usually "C:\Program Files\obs-studio")
 1. Go to the releases page for this repo.
-2. Select the appropriate package installer for your operating system.
-3. Once downloaded, run the package installer.
+2. Download the .zip
+3. Extract and move to your obs installation directory
+![moving the files to the obs folder](https://github.com/asgrk/obs-image-reaction-with-auto-refresh/blob/main/move%20to%20obs%20folder.gif)
 
 ## Build Plugin Locally
 ---
